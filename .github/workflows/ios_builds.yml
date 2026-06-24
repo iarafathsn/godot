@@ -9,12 +9,15 @@ env:
     dev_mode=yes
     module_text_server_fb_enabled=yes
     debug_symbols=no
+    vulkan=no
+    metal=yes
+    disable_path_overrides=no
 
 jobs:
-  ios-template:
+  ios-libgodot:
     # From https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job#choosing-github-hosted-runners
     runs-on: macos-26
-    name: Template (target=template_release)
+    name: libgodot iOS (template_release)
     timeout-minutes: 60
 
     steps:
@@ -30,10 +33,24 @@ jobs:
       - name: Setup Python and SCons
         uses: ./.github/actions/godot-deps
 
-      - name: Compilation (arm64)
+      - name: Compilation (arm64 device)
         uses: ./.github/actions/godot-build
         with:
-          scons-flags: ${{ env.SCONS_FLAGS }}
+          scons-flags: ${{ env.SCONS_FLAGS }} arch=arm64 simulator=no
+          platform: ios
+          target: template_release
+
+      - name: Compilation (arm64 simulator)
+        uses: ./.github/actions/godot-build
+        with:
+          scons-flags: ${{ env.SCONS_FLAGS }} arch=arm64 simulator=yes
+          platform: ios
+          target: template_release
+
+      - name: Compilation (x86_64 simulator)
+        uses: ./.github/actions/godot-build
+        with:
+          scons-flags: ${{ env.SCONS_FLAGS }} arch=x86_64 simulator=yes
           platform: ios
           target: template_release
 
@@ -43,3 +60,11 @@ jobs:
 
       - name: Upload artifact
         uses: ./.github/actions/upload-artifact
+        with:
+          name: libgodot-ios
+          path: |
+            bin/libgodot.ios.template_release.arm64.a
+            bin/libgodot.ios.template_release.arm64.simulator.a
+            bin/libgodot.ios.template_release.x86_64.simulator.a
+            core/extension/libgodot.h
+            core/extension/gdextension_interface.gen.h
