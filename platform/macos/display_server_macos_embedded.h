@@ -126,7 +126,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	static DisplayServerEmbedded *get_singleton();
+	static DisplayServerMacOSEmbedded *get_singleton();
 	static void set_native_surface(Ref<RenderingNativeSurface> p_native_surface);
 	
 	static void register_embedded_driver();
@@ -155,7 +155,7 @@ public:
 	void touch_press(int p_idx, int p_x, int p_y, bool p_pressed, bool p_double_click, DisplayServerEnums::WindowID p_window);
 	void touch_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y, float p_pressure, Vector2 p_tilt, DisplayServerEnums::WindowID p_window);
 	void touches_canceled(int p_idx, DisplayServerEnums::WindowID p_window);
-	void key(Key p_key, char32_t p_char, Key p_unshifted, Key p_physical, BitField<KeyModifierMask> p_modifiers, bool p_pressed, DisplayServerEnums::WindowID p_window = MAIN_WINDOW_ID);
+	void key(Key p_key, char32_t p_char, Key p_unshifted, Key p_physical, BitField<KeyModifierMask> p_modifiers, bool p_pressed, DisplayServerEnums::WindowID p_window = DisplayServerEnums::MAIN_WINDOW_ID);
 
 	// MARK: - Mouse
 	virtual void warp_mouse(const Point2i &p_position) override;
