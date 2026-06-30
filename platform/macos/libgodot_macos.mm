@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "display_server_macos_embedded.h
+#include "display_server_macos_embedded.h"
 #include "os_macos.h"
 
 #include "core/object/class_db.h"

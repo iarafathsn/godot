@@ -43,6 +43,7 @@
 #import "drivers/apple_embedded/os_apple_embedded.h"
 #import "drivers/apple_embedded/tts_apple_embedded.h"
 #include "servers/display/native_menu.h"
+#include "drivers/apple/rendering_native_surface_apple.h"
 
 #import <GameController/GameController.h>
 
@@ -71,6 +72,8 @@ DisplayServerAppleEmbedded::DisplayServerAppleEmbedded(const String &p_rendering
 	rendering_device = nullptr;
 
 	CALayer *layer = nullptr;
+	
+	Ref<RenderingNativeSurfaceApple> apple_surface;
 
 	union {
 #ifdef VULKAN_ENABLED
@@ -98,8 +101,8 @@ DisplayServerAppleEmbedded::DisplayServerAppleEmbedded(const String &p_rendering
 	if (rendering_driver == "metal") {
 		if (@available(iOS 14.0, *)) {
 			layer = [GDTAppDelegateService.viewController.godotView initializeRenderingForDriver:@"metal"];
-			wpd.metal.layer = (__bridge CA::MetalLayer *)layer;
-			rendering_context = memnew(RenderingContextDriverMetal);
+			apple_surface = RenderingNativeSurfaceApple::create((__bridge void *)layer);
+			rendering_context = apple_surface->create_rendering_context(rendering_driver);
 		} else {
 			OS::get_singleton()->alert("Metal is only supported on iOS 14.0 and later.");
 			r_error = ERR_UNAVAILABLE;
@@ -129,7 +132,7 @@ DisplayServerAppleEmbedded::DisplayServerAppleEmbedded(const String &p_rendering
 	}
 
 	if (rendering_context) {
-		if (rendering_context->window_create(DisplayServerEnums::MAIN_WINDOW_ID, &wpd) != OK) {
+		if (rendering_context->window_create(DisplayServerEnums::MAIN_WINDOW_ID, apple_surface) != OK) {
 			ERR_PRINT(vformat("Failed to create %s window.", rendering_driver));
 			memdelete(rendering_context);
 			rendering_context = nullptr;

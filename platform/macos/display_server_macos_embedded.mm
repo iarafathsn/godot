@@ -84,7 +84,7 @@ void DisplayServerMacOSEmbedded::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("touch_press", "idx", "x", "y", "pressed", "double_click", "window"), &DisplayServerMacOSEmbedded::touch_press);
 	ClassDB::bind_method(D_METHOD("touch_drag", "idx", "prev_x", "prev_y", "x", "y", "pressure", "tilt", "window"), &DisplayServerMacOSEmbedded::touch_drag);
 	ClassDB::bind_method(D_METHOD("touches_canceled", "idx", "window"), &DisplayServerMacOSEmbedded::touches_canceled);
-	ClassDB::bind_method(D_METHOD("key", "key", "char", "unshifted", "physical", "modifiers", "pressed", "window"), &DisplayServerMacOSEmbedded::key, DEFVAL(MAIN_WINDOW_ID));
+	ClassDB::bind_method(D_METHOD("key", "key", "char", "unshifted", "physical", "modifiers", "pressed", "window"), &DisplayServerMacOSEmbedded::key, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
 }
 
 DisplayServerMacOSEmbedded::DisplayServerMacOSEmbedded(const String &p_rendering_driver, DisplayServerEnums::WindowMode p_mode, DisplayServerEnums::VSyncMode p_vsync_mode, uint32_t p_flags, const Vector2i *p_position, const Vector2i &p_resolution, int p_screen, DisplayServerEnums::Context p_context, Error &r_error) {
@@ -448,7 +448,7 @@ void DisplayServerMacOSEmbedded::perform_event(const Ref<InputEvent> &p_event) {
 	Input::get_singleton()->parse_input_event(p_event);
 }
 
-void DisplayServerMacOSEmbedded::resize_window(Size2i p_size, WindowID p_id) {
+void DisplayServerMacOSEmbedded::resize_window(Size2i p_size, DisplayServerEnums::WindowID p_id) {
 	Size2i scaled_size = Size2i(int32_t(p_size.x * content_scale), int32_t(p_size.y * content_scale));
 	_window_set_size(scaled_size, p_id);
 }

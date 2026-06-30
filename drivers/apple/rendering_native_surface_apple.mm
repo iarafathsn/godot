@@ -29,6 +29,7 @@
 /**************************************************************************/
 
 #include "drivers/apple/rendering_native_surface_apple.h"
+#include "drivers/metal/rendering_context_driver_metal.h"
 
 void RenderingNativeSurfaceApple::_bind_methods() {
 	ClassDB::bind_static_method("RenderingNativeSurfaceApple", D_METHOD("create", "layer"), &RenderingNativeSurfaceApple::create_api);
@@ -36,9 +37,28 @@ void RenderingNativeSurfaceApple::_bind_methods() {
 }
 
 Ref<RenderingNativeSurfaceApple> RenderingNativeSurfaceApple::create_api(uint64_t p_layer) {
+	return RenderingNativeSurfaceApple::create((void *)p_layer);
+}
+
+Ref<RenderingNativeSurfaceApple> RenderingNativeSurfaceApple::create(void *p_layer) {
 	Ref<RenderingNativeSurfaceApple> result = memnew(RenderingNativeSurfaceApple);
-	result->set_layer(p_layer);
+	result->layer = p_layer;
 	return result;
+}
+
+RenderingContextDriver *RenderingNativeSurfaceApple::create_rendering_context(const String &p_rendering_driver) {
+#if defined(METAL_ENABLED)
+	if (p_rendering_driver == "metal") {
+		if (@available(ios 14.0, *)) {
+			return memnew(RenderingContextDriverMetal);
+		}
+	}
+#endif
+	return nullptr;
+}
+
+uint64_t RenderingNativeSurfaceApple::get_layer() {
+	return (uint64_t)layer;
 }
 
 RenderingNativeSurfaceApple::RenderingNativeSurfaceApple() {

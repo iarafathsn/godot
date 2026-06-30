@@ -33,6 +33,8 @@
 #include "core/object/class_db.h"
 #include "core/object/ref_counted.h"
 
+class RenderingContextDriver;
+
 class RenderingNativeSurface : public RefCounted {
 	GDCLASS(RenderingNativeSurface, RefCounted);
 
@@ -41,4 +43,6 @@ class RenderingNativeSurface : public RefCounted {
 public:
 	RenderingNativeSurface();
 	~RenderingNativeSurface();
+	
+	virtual RenderingContextDriver *create_rendering_context(const String &p_driver_name) = 0;
 };
